@@ -1,0 +1,126 @@
+<div class="container mx-auto p-4 bg-gray-100 min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-3xl font-bold text-center text-green-700 mb-6">Admin Panel - User Management</h2>
+
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
+    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ successMessage }}</span>
+    </div>
+
+    <button (click)="loadUsers()"
+            class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-150 ease-in-out mb-6">
+      Reload Users
+    </button>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Roles</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let user of users">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.roles?.join(', ') || 'None' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.isActive ? 'Yes' : 'No' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button (click)="onSelectUser(user)" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+              <button (click)="onDeleteUser(user.id)" class="text-red-600 hover:text-red-900">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="selectedUser" class="mt-8 p-6 bg-blue-50 rounded-lg shadow-inner">
+      <h3 class="text-xl font-bold text-blue-700 mb-4">Edit User: {{ selectedUser.username }}</h3>
+      <form [formGroup]="userEditForm" (ngSubmit)="onUpdateUser()" class="space-y-4">
+        <div>
+          <label for="editUsername" class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" id="editUsername" formControlName="username"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="editEmail" class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="editEmail" formControlName="email"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="isActive" formControlName="isActive"
+                 class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+          <label for="isActive" class="ml-2 block text-sm text-gray-900">Is Active</label>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="isVerified" formControlName="isVerified"
+                 class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+          <label for="isVerified" class="ml-2 block text-sm text-gray-900">Is Email Verified</label>
+        </div>
+
+        <div class="border rounded-md p-3">
+          <h4 class="text-md font-semibold text-gray-700 mb-2">Roles</h4>
+          <div class="flex flex-wrap gap-3">
+            <div *ngFor="let role of allRoles" class="flex items-center">
+              <input type="checkbox" [id]="'role-' + role" [value]="role"
+                     [checked]="userEditForm.get('roles')?.value?.includes(role)"
+                     (change)="onRoleChange(role, $event)"
+                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+              <label [for]="'role-' + role" class="ml-2 text-sm text-gray-900 capitalize">{{ role }}</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="border rounded-md p-3">
+          <h4 class="text-md font-semibold text-gray-700 mb-2">Permissions</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div *ngFor="let permission of allPermissions" class="flex items-center">
+              <input type="checkbox" [id]="'perm-' + permission" [value]="permission"
+                     [checked]="userEditForm.get('permissions')?.value?.includes(permission)"
+                     (change)="onPermissionChange(permission, $event)"
+                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+              <label [for]="'perm-' + permission" class="ml-2 text-sm text-gray-900">{{ permission }}</label>
+            </div>
+          </div>
+        </div>
+
+        <div formGroupName="customFields" class="border rounded-md p-3">
+          <h4 class="text-md font-semibold text-gray-700 mb-2">Custom Fields</h4>
+          <div *ngIf="(userEditForm.get('customFields')?.value | keyvalue)?.length === 0" class="text-gray-500 text-sm italic mb-2">No custom fields for this user.</div>
+          <div *ngFor="let control of getCustomFieldControls() | keyvalue" class="mb-2 flex items-center">
+            <label class="block text-sm font-medium text-gray-700 w-1/3 capitalize">{{ control.key }}</label>
+            <input [formControl]="getCustomFieldControl(control.value)" type="text"
+                   class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <button type="button" (click)="removeCustomField(control.key)"
+                    class="ml-2 text-red-600 hover:text-red-800 text-sm">Remove</button>
+          </div>
+          <div class="mt-3">
+            <input type="text" #newCustomFieldKey placeholder="New field name" class="px-3 py-2 border border-gray-300 rounded-l-md text-sm w-1/3">
+            <input type="text" #newCustomFieldValue placeholder="New field value" class="px-3 py-2 border border-gray-300 text-sm w-1/3">
+            <button type="button" (click)="addCustomField(newCustomFieldKey.value, newCustomFieldValue.value); newCustomFieldKey.value=''; newCustomFieldValue.value=''"
+                    class="bg-gray-200 text-gray-700 py-2 px-4 rounded-r-md hover:bg-gray-300 transition duration-150 ease-in-out text-sm">Add Field</button>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 mt-6">
+          <button type="button" (click)="selectedUser = null; errorMessage='';"
+                  class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+            Cancel
+          </button>
+          <button type="submit" [disabled]="userEditForm.invalid"
+                  class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
