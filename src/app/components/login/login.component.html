@@ -1,4 +1,3 @@
-<!-- login.component.html -->
 <div class="auth-form-container">
   <mat-card class="auth-card">
     <mat-card-title class="text-center mb-4">
@@ -28,6 +27,13 @@
           Login
         </button>
       </form>
+
+      <mat-divider class="my-4">OR</mat-divider>
+
+      <button mat-raised-button color="accent" (click)="onPasskeyLogin()" class="w-100 py-2">
+        <mat-icon class="me-1">fingerprint</mat-icon> Login with Passkey
+      </button>
+
     </mat-card-content>
     <mat-card-actions class="text-center d-block">
       <div *ngIf="errorMessage" class="alert-danger-material mb-3">{{ errorMessage }}</div>

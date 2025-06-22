@@ -74,7 +74,8 @@
               "browserTarget": "nxt-access-guard-frontend:build:production"
             },
             "development": {
-              "browserTarget": "nxt-access-guard-frontend:build:development"
+              "browserTarget": "nxt-access-guard-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

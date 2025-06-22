@@ -1,10 +1,11 @@
+// app.module.ts
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-// Angular Material Modules
+// Angular Material Modules (already there, good)
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatListModule } from '@angular/material/list'; // Add MatListModule for displaying passkeys
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,6 +33,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { TwoFactorAuthComponent } from './components/two-factor-auth/two-factor-auth.component';
 import { HomeComponent } from './components/home/home.component';
+import { PasskeyManagementComponent } from './components/passkey-management/passkey-management.component'; // Import new component
 
 @NgModule({
   declarations: [
@@ -43,7 +46,8 @@ import { HomeComponent } from './components/home/home.component';
     ForgotPasswordComponent,
     ResetPasswordComponent,
     TwoFactorAuthComponent,
-    HomeComponent
+    HomeComponent,
+    PasskeyManagementComponent // Add new component here
   ],
   imports: [
     BrowserModule,
@@ -66,7 +70,8 @@ import { HomeComponent } from './components/home/home.component';
     MatCheckboxModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatListModule // Add MatListModule
   ],
   providers: [
     {

@@ -1,0 +1,51 @@
+<div class="container py-4">
+  <mat-card class="p-4 shadow-sm">
+    <mat-card-title class="text-center mb-4">
+      <h2 class="h3 fw-bold text-success">Manage Passkeys</h2>
+    </mat-card-title>
+
+    <mat-card-content>
+      <div *ngIf="message" class="alert-success-material mb-3" role="alert">
+        {{ message }}
+      </div>
+      <div *ngIf="errorMessage" class="alert-danger-material mb-3" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <ng-container *ngIf="currentUser">
+        <h3 class="h5 fw-bold text-secondary mb-3 pb-2 border-bottom">Register New Passkey</h3>
+        <p class="text-muted mb-4">
+          Register a new passkey (e.g., Face ID, Touch ID, security key) to log in to your account without a password.
+        </p>
+        <button mat-raised-button color="primary" (click)="registerPasskey()" class="w-100 py-2 mb-4">
+          <mat-icon class="me-1">vpn_key</mat-icon> Register New Passkey
+        </button>
+
+        <h3 class="h5 fw-bold text-secondary mt-4 mb-3 pb-2 border-bottom">Your Registered Passkeys</h3>
+        <div *ngIf="passkeys.length === 0" class="text-muted fst-italic mb-3">
+          No passkeys registered yet. Register one to enable passwordless login!
+        </div>
+
+        <mat-list *ngIf="passkeys.length > 0">
+          <mat-list-item *ngFor="let passkey of passkeys">
+            <mat-icon matListItemIcon>lock_open</mat-icon>
+            <div matListItemTitle>
+              <strong>{{ passkey.name || 'Passkey' }}</strong> (ID: {{ passkey.credID.substring(0, 10) }}...)
+            </div>
+            <div matListItemLine>
+              Registered: {{ formatDate(passkey.createdAt) }} | Last Used: {{ formatDate(passkey.lastUsedAt) }}
+            </div>
+            <div matListItemLine *ngIf="passkey.transports && passkey.transports.length > 0">
+              Transports: {{ passkey.transports.join(', ') }}
+            </div>
+            <button mat-icon-button color="warn" matListItemMeta (click)="deletePasskey(passkey.credID)"
+              aria-label="Delete passkey">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+        </mat-list>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>

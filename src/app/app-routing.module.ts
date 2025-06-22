@@ -1,3 +1,4 @@
+// app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
@@ -11,7 +12,7 @@ import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { TwoFactorAuthComponent } from './components/two-factor-auth/two-factor-auth.component';
-
+import { PasskeyManagementComponent } from './components/passkey-management/passkey-management.component'; // Import
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: '2fa-setup', component: TwoFactorAuthComponent, canActivate: [AuthGuard] },
+  { path: 'passkey-management', component: PasskeyManagementComponent, canActivate: [AuthGuard] }, // New route
   {
     path: 'admin',
     component: AdminPanelComponent,
@@ -36,4 +38,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-
