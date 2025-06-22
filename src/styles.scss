@@ -1,1 +1,67 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/scss/bootstrap';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Basic styling for container around forms
+.auth-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px); // Adjust for toolbar height
+  background-color: #f8f9fa; // Light gray background
+  padding: 1rem; // Add some padding
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 10px; // Slightly more rounded corners
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Soft shadow
+  padding: 2rem;
+}
+
+// Custom styles for error/success messages within Material/Bootstrap
+.alert-success-material {
+  background-color: #e6ffed;
+  color: #1a6d2c;
+  border: 1px solid #71b97e;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.alert-danger-material {
+  background-color: #ffe6e6;
+  color: #a72727;
+  border: 1px solid #c97171;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+// Override Mat form field density for a slightly more compact look
+.mat-form-field-wrapper {
+  padding-bottom: 0.5em !important;
+}
+
+// Adjustments for MatCard actions to prevent extra padding
+mat-card-actions {
+  padding-top: 0 !important;
+}
+
+.mat-icon {
+    vertical-align: middle;
+}
+
+
+// In src/styles.scss
+.snackbar-success {
+  background-color: #4CAF50; // Green
+  color: white;
+}
+.snackbar-error {
+  background-color: #F44336; // Red
+  color: white;
+}

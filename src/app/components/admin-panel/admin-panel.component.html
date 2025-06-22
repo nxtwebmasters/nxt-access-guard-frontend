@@ -1,126 +1,191 @@
-<div class="container mx-auto p-4 bg-gray-100 min-h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-md">
-    <h2 class="text-3xl font-bold text-center text-green-700 mb-6">Admin Panel - User Management</h2>
+<!-- admin-panel.component.html -->
+<div class="container py-4">
+  <mat-card class="p-4 shadow-sm">
+    <mat-card-title class="text-center mb-4">
+      <h2 class="h3 fw-bold text-success">Admin Panel - User Management</h2>
+    </mat-card-title>
 
-    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-      <span class="block sm:inline">{{ errorMessage }}</span>
-    </div>
-    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-      <span class="block sm:inline">{{ successMessage }}</span>
-    </div>
+    <mat-card-content>
+      <div *ngIf="errorMessage" class="alert-danger-material mb-3" role="alert">
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="alert-success-material mb-3" role="alert">
+        {{ successMessage }}
+      </div>
 
-    <button (click)="loadUsers()"
-            class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-150 ease-in-out mb-6">
-      Reload Users
-    </button>
+      <button mat-raised-button color="primary" (click)="loadUsers()" class="mb-4">
+        <mat-icon class="me-1">refresh</mat-icon> Reload Users
+      </button>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Roles</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let user of users">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.roles?.join(', ') || 'None' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.isActive ? 'Yes' : 'No' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.isVerified ? 'Yes' : 'No' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button (click)="onSelectUser(user)" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
-              <button (click)="onDeleteUser(user.id)" class="text-red-600 hover:text-red-900">Delete</button>
+      <div class="mat-elevation-z2 mb-5">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- Username Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Username </th>
+            <td mat-cell *matCellDef="let user"> {{user.username}} </td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+            <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+          </ng-container>
+
+          <!-- Roles Column -->
+          <ng-container matColumnDef="roles">
+            <th mat-header-cell *matHeaderCellDef> Roles </th>
+            <td mat-cell *matCellDef="let user"> {{user.roles?.join(', ') || 'None'}} </td>
+          </ng-container>
+
+          <!-- Active Column -->
+          <ng-container matColumnDef="isActive">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Active </th>
+            <td mat-cell *matCellDef="let user">
+              <mat-icon color="primary" *ngIf="user.isActive">check_circle</mat-icon>
+              <mat-icon color="warn" *ngIf="!user.isActive">cancel</mat-icon>
             </td>
+          </ng-container>
+
+          <!-- Verified Column -->
+          <ng-container matColumnDef="isVerified">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Verified </th>
+            <td mat-cell *matCellDef="let user">
+              <mat-icon color="primary" *ngIf="user.isVerified">check_circle</mat-icon>
+              <mat-icon color="warn" *ngIf="!user.isVerified">cancel</mat-icon>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button color="primary" (click)="onSelectUser(user)" aria-label="Edit user">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onDeleteUser(user.id)" aria-label="Delete user">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="6">No users found matching the filter.</td>
           </tr>
-        </tbody>
-      </table>
-    </div>
+        </table>
 
-    <div *ngIf="selectedUser" class="mt-8 p-6 bg-blue-50 rounded-lg shadow-inner">
-      <h3 class="text-xl font-bold text-blue-700 mb-4">Edit User: {{ selectedUser.username }}</h3>
-      <form [formGroup]="userEditForm" (ngSubmit)="onUpdateUser()" class="space-y-4">
-        <div>
-          <label for="editUsername" class="block text-sm font-medium text-gray-700">Username</label>
-          <input type="text" id="editUsername" formControlName="username"
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-        </div>
-        <div>
-          <label for="editEmail" class="block text-sm font-medium text-gray-700">Email</label>
-          <input type="email" id="editEmail" formControlName="email"
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-        </div>
-        <div class="flex items-center">
-          <input type="checkbox" id="isActive" formControlName="isActive"
-                 class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-          <label for="isActive" class="ml-2 block text-sm text-gray-900">Is Active</label>
-        </div>
-        <div class="flex items-center">
-          <input type="checkbox" id="isVerified" formControlName="isVerified"
-                 class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-          <label for="isVerified" class="ml-2 block text-sm text-gray-900">Is Email Verified</label>
-        </div>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
 
-        <div class="border rounded-md p-3">
-          <h4 class="text-md font-semibold text-gray-700 mb-2">Roles</h4>
-          <div class="flex flex-wrap gap-3">
-            <div *ngFor="let role of allRoles" class="flex items-center">
-              <input type="checkbox" [id]="'role-' + role" [value]="role"
-                     [checked]="userEditForm.get('roles')?.value?.includes(role)"
-                     (change)="onRoleChange(role, $event)"
-                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-              <label [for]="'role-' + role" class="ml-2 text-sm text-gray-900 capitalize">{{ role }}</label>
+      <div *ngIf="selectedUser" class="mt-4 p-4 border rounded bg-info-subtle shadow-sm">
+        <h3 class="h5 fw-bold text-info mb-4">Edit User: {{ selectedUser.username }}</h3>
+        <form [formGroup]="userEditForm" (ngSubmit)="onUpdateUser()" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Username</mat-label>
+                <input matInput type="text" id="editUsername" formControlName="username">
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" id="editEmail" formControlName="email">
+              </mat-form-field>
             </div>
           </div>
-        </div>
 
-        <div class="border rounded-md p-3">
-          <h4 class="text-md font-semibold text-gray-700 mb-2">Permissions</h4>
-          <div class="grid grid-cols-2 gap-3">
-            <div *ngFor="let permission of allPermissions" class="flex items-center">
-              <input type="checkbox" [id]="'perm-' + permission" [value]="permission"
-                     [checked]="userEditForm.get('permissions')?.value?.includes(permission)"
-                     (change)="onPermissionChange(permission, $event)"
-                     class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-              <label [for]="'perm-' + permission" class="ml-2 text-sm text-gray-900">{{ permission }}</label>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <mat-checkbox id="isActive" formControlName="isActive" color="primary">
+                Is Active
+              </mat-checkbox>
+            </div>
+            <div class="col-md-6">
+              <mat-checkbox id="isVerified" formControlName="isVerified" color="primary">
+                Is Email Verified
+              </mat-checkbox>
             </div>
           </div>
-        </div>
 
-        <div formGroupName="customFields" class="border rounded-md p-3">
-          <h4 class="text-md font-semibold text-gray-700 mb-2">Custom Fields</h4>
-          <div *ngIf="(userEditForm.get('customFields')?.value | keyvalue)?.length === 0" class="text-gray-500 text-sm italic mb-2">No custom fields for this user.</div>
-          <div *ngFor="let control of getCustomFieldControls() | keyvalue" class="mb-2 flex items-center">
-            <label class="block text-sm font-medium text-gray-700 w-1/3 capitalize">{{ control.key }}</label>
-            <input [formControl]="getCustomFieldControl(control.value)" type="text"
-                   class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-            <button type="button" (click)="removeCustomField(control.key)"
-                    class="ml-2 text-red-600 hover:text-red-800 text-sm">Remove</button>
+          <div class="border rounded p-3 mb-4">
+            <h4 class="h6 fw-bold text-secondary mb-3">Roles</h4>
+            <div class="row g-2">
+              <div class="col-auto" *ngFor="let role of allRoles">
+                <mat-checkbox [id]="'role-' + role" [value]="role"
+                              [checked]="userEditForm.get('roles')?.value?.includes(role)"
+                              (change)="onRoleChange(role, $event)" color="primary">
+                  {{ role | titlecase }}
+                </mat-checkbox>
+              </div>
+            </div>
           </div>
-          <div class="mt-3">
-            <input type="text" #newCustomFieldKey placeholder="New field name" class="px-3 py-2 border border-gray-300 rounded-l-md text-sm w-1/3">
-            <input type="text" #newCustomFieldValue placeholder="New field value" class="px-3 py-2 border border-gray-300 text-sm w-1/3">
-            <button type="button" (click)="addCustomField(newCustomFieldKey.value, newCustomFieldValue.value); newCustomFieldKey.value=''; newCustomFieldValue.value=''"
-                    class="bg-gray-200 text-gray-700 py-2 px-4 rounded-r-md hover:bg-gray-300 transition duration-150 ease-in-out text-sm">Add Field</button>
-          </div>
-        </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
-          <button type="button" (click)="selectedUser = null; errorMessage='';"
-                  class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-            Cancel
-          </button>
-          <button type="submit" [disabled]="userEditForm.invalid"
-                  class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-            Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+          <div class="border rounded p-3 mb-4">
+            <h4 class="h6 fw-bold text-secondary mb-3">Permissions</h4>
+            <div class="row g-2">
+              <div class="col-12 col-md-6" *ngFor="let permission of allPermissions">
+                <mat-checkbox [id]="'perm-' + permission" [value]="permission"
+                              [checked]="userEditForm.get('permissions')?.value?.includes(permission)"
+                              (change)="onPermissionChange(permission, $event)" color="primary">
+                  {{ permission }}
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div formGroupName="customFields" class="border rounded p-3 mb-4">
+            <h4 class="h6 fw-bold text-secondary mb-3">Custom Fields</h4>
+            <div *ngIf="(userEditForm.get('customFields')?.value | keyvalue)?.length === 0" class="text-muted fst-italic mb-2">No custom fields for this user.</div>
+            <div *ngFor="let control of getCustomFieldControls() | keyvalue" class="mb-3 row g-2 align-items-center">
+              <div class="col-12 col-md-4">
+                <label class="form-label text-capitalize mb-0">{{ control.key }}</label>
+              </div>
+              <div class="col-12 col-md-8 d-flex">
+                <!-- Corrected formControl binding: control.value directly holds the FormControl -->
+                <mat-form-field appearance="outline" class="w-100 me-2">
+                  <input matInput [formControl]="control.value" type="text">
+                </mat-form-field>
+                <button mat-icon-button color="warn" type="button" (click)="removeCustomField(control.key)" aria-label="Remove custom field">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="mt-3 row g-2">
+              <div class="col-12 col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>New field name</mat-label>
+                  <input matInput type="text" #newCustomFieldKey>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-md-4">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>New field value</mat-label>
+                  <input matInput type="text" #newCustomFieldValue>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-md-4 d-grid">
+                <button mat-flat-button color="accent" type="button" (click)="addCustomField(newCustomFieldKey.value, newCustomFieldValue.value); newCustomFieldKey.value=''; newCustomFieldValue.value=''">
+                  <mat-icon class="me-1">add</mat-icon> Add Field
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end space-x-3 mt-4">
+            <button mat-stroked-button color="secondary" type="button" (click)="selectedUser = null; errorMessage='';" class="me-2">
+              Cancel
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="userEditForm.invalid">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

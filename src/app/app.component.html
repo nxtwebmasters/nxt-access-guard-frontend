@@ -1,1 +1,40 @@
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet> -->
+
+<!-- app/app.component.html -->
+<mat-toolbar color="primary" class="d-flex justify-content-between align-items-center">
+  <!-- Brand/App Name -->
+  <a routerLink="/" class="text-white text-decoration-none h5 mb-0">
+    <mat-icon class="me-2">verified_user</mat-icon>
+    NxtAccessGuard
+  </a>
+
+  <!-- Navigation Links -->
+  <div>
+    <button mat-button routerLink="/home" *ngIf="!isLoggedIn()">
+      <mat-icon class="me-1">home</mat-icon> Home
+    </button>
+    <button mat-button routerLink="/login" *ngIf="!isLoggedIn()">
+      <mat-icon class="me-1">login</mat-icon> Login
+    </button>
+    <button mat-button routerLink="/register" *ngIf="!isLoggedIn()">
+      <mat-icon class="me-1">person_add</mat-icon> Register
+    </button>
+    <button mat-button routerLink="/dashboard" *ngIf="isLoggedIn()">
+      <mat-icon class="me-1">dashboard</mat-icon> Dashboard
+    </button>
+    <button mat-button routerLink="/profile" *ngIf="isLoggedIn()">
+      <mat-icon class="me-1">account_circle</mat-icon> Profile
+    </button>
+    <button mat-button routerLink="/admin" *ngIf="isLoggedIn() && (isAdmin$ | async)">
+      <mat-icon class="me-1">admin_panel_settings</mat-icon> Admin
+    </button>
+    <button mat-button (click)="logout()" *ngIf="isLoggedIn()">
+      <mat-icon class="me-1">logout</mat-icon> Logout
+    </button>
+  </div>
+</mat-toolbar>
+
+<!-- Main content area -->
+<div class="container-fluid mt-3">
+  <router-outlet></router-outlet>
+</div>

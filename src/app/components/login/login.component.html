@@ -1,37 +1,42 @@
 <!-- login.component.html -->
-<div class="container mx-auto p-4 flex justify-center items-center min-h-screen bg-gray-100">
-  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
-      <div>
-        <label for="identifier" class="block text-sm font-medium text-gray-700">Username or Email</label>
-        <input type="text" id="identifier" formControlName="identifier"
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-               placeholder="Enter your username or email">
-        <div *ngIf="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched" class="text-red-500 text-xs mt-1">
-          Identifier is required.
+<div class="auth-form-container">
+  <mat-card class="auth-card">
+    <mat-card-title class="text-center mb-4">
+      <h2 class="h3 fw-bold text-primary">Login</h2>
+    </mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Username or Email</mat-label>
+            <input matInput type="text" id="identifier" formControlName="identifier" placeholder="Enter your username or email" required>
+            <mat-error *ngIf="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched">
+              Identifier is required.
+            </mat-error>
+          </mat-form-field>
         </div>
-      </div>
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" id="password" formControlName="password"
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-               placeholder="Enter your password">
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
-          Password is required.
+        <div class="mb-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" id="password" formControlName="password" placeholder="Enter your password" required>
+            <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              Password is required.
+            </mat-error>
+          </mat-form-field>
         </div>
-      </div>
-      <button type="submit" [disabled]="loginForm.invalid"
-              class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-        Login
-      </button>
-    </form>
-    <div *ngIf="errorMessage" class="text-red-600 text-center mt-4">{{ errorMessage }}</div>
-    <div class="text-center mt-4">
-      <a routerLink="/register" class="text-indigo-600 hover:text-indigo-800 text-sm">Don't have an account? Register</a>
-    </div>
-    <div class="text-center mt-2">
-      <a routerLink="/forgot-password" class="text-indigo-600 hover:text-indigo-800 text-sm">Forgot Password?</a>
-    </div>
-  </div>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="w-100 py-2 mb-3">
+          Login
+        </button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="text-center d-block">
+      <div *ngIf="errorMessage" class="alert-danger-material mb-3">{{ errorMessage }}</div>
+      <p class="mb-1">
+        <a routerLink="/register" class="text-primary text-decoration-none">Don't have an account? Register</a>
+      </p>
+      <p>
+        <a routerLink="/forgot-password" class="text-primary text-decoration-none">Forgot Password?</a>
+      </p>
+    </mat-card-actions>
+  </mat-card>
 </div>
